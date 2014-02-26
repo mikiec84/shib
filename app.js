@@ -12,6 +12,18 @@ var SimpleCSVBuilder = require('shib/simple_csv_builder').SimpleCSVBuilder;
 var shib = require('shib'),
     servers = require('./config').servers;
 
+var log4js = require('log4js');
+log4js.configure({
+    appenders: [
+        {
+            "type": "file",
+            "category": "query",
+            "filename": "logs/query.log",
+            "pattern": "-yyyy-MM-dd"
+        },
+    ]
+});
+
 if (process.env.NODE_ENV === 'production') {
   servers = require('./production').servers;
 }
@@ -216,6 +228,8 @@ app.get('/summary_bulk', function(req, res){
 });
   
 app.post('/execute', function(req, res){
+  var logger = log4js.getLogger('query');
+  logger.info(req.headers['x-forwarded-user'] + " " + req.body.querystring);
   var client = shib.client();
   var engineLabel = req.body.engineLabel;
   var dbname = req.body.dbname;
