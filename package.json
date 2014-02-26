@@ -42,7 +42,8 @@
         }
     ],
     "scripts" : {
-        "start": "NODE_PATH=lib node app.js"
+        "start": "NODE_PATH=lib forever --minUptime 1000 --spinSleepTime 1000 -a -l forever.log -o logs/shib.out -e logs/shib.err start app.js",
+        "stop": "NODE_PATH=lib forever stop app.js"
     },
     "main": "app.js"
 }
