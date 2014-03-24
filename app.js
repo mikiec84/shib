@@ -423,6 +423,8 @@ app.get('/download/tsv/:resultid', function(req, res){
       client.end();
       return;
     }
+    var stat =  fs.statSync(file);
+    res.set('Content-Length', stat.size);
     var rStream = fs.createReadStream(file);
     rStream.on('data', function(chunk){
       rStream.pause();
