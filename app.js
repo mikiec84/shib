@@ -424,18 +424,17 @@ app.get('/download/tsv/:resultid', function(req, res){
       return;
     }
     var rStream = fs.createReadStream(file);
-    rStream.on('data', function(chunk){
-      rStream.pause();
-      process.nextTick(function(){
-        res.write(chunk);
-      });
+    var readline = require('readline');
+    var rl = readline.createInterface(rStream, {});
+    rl.on('line', function(line){
+      res.write(line + '\n');
     });
-    rStream.on('end', function(){
+    rl.on('close', function(){
       res.end();
       client.end();
     });
-    res.on('drain', function(){
-      rStream.resume();
+    res.on('resume', function(){
+      rl.resume();
     });
 
   });
